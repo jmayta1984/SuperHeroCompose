@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "pe.edu.superherocompose"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "pe.edu.superherocompose"
@@ -65,6 +65,9 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
 
     implementation("com.github.skydoves:landscapist-glide:2.1.9")
+
+    val navVersion = "2.7.2"
+    implementation("androidx.navigation:navigation-compose:$navVersion")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
