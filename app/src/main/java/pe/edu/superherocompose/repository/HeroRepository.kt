@@ -16,12 +16,16 @@ class HeroRepository(private val heroService: HeroService = ApiClient.getHeroSer
         searchByName.enqueue(object : Callback<HeroResponse> {
             override fun onResponse(call: Call<HeroResponse>, response: Response<HeroResponse>) {
                 if (response.isSuccessful) {
-                    callback(Result.Success(response.body()!!.heroes))
+                    try {
+                        callback(Result.Success(response.body()!!.heroes))
+                    } catch (e: Exception){
+                        callback(Result.Success(listOf<Hero>()))
+                    }
                 }
             }
 
             override fun onFailure(call: Call<HeroResponse>, t: Throwable) {
-                callback(Result.Error(t.localizedMessage))
+                callback(Result.Error(t.localizedMessage as String))
             }
         })
     }
