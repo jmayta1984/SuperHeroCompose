@@ -26,7 +26,9 @@ import pe.edu.superherocompose.repository.HeroRepository
 import pe.edu.superherocompose.utils.Result
 
 @Composable
-fun Search() {
+fun Search(
+    selectHero: (String) -> Unit
+) {
 
     val textQuery = remember {
         mutableStateOf("")
@@ -38,13 +40,16 @@ fun Search() {
 
     Column {
         HeroSearch(textQuery, heroes)
-        HeroList(heroes)
+        HeroList(heroes, selectHero)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeroSearch(textQuery: MutableState<String>, heroes: MutableState<List<Hero>>) {
+fun HeroSearch(
+    textQuery: MutableState<String>,
+    heroes: MutableState<List<Hero>>
+) {
     val repository = HeroRepository()
     val context = LocalContext.current
 
