@@ -1,5 +1,7 @@
 package pe.edu.superherocompose.repository
 
+import pe.edu.superherocompose.data.local.HeroDao
+import pe.edu.superherocompose.data.local.HeroEntity
 import pe.edu.superherocompose.data.model.Hero
 import pe.edu.superherocompose.data.model.HeroResponse
 import pe.edu.superherocompose.data.remote.ApiClient
@@ -9,7 +11,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HeroRepository(private val heroService: HeroService = ApiClient.getHeroService()) {
+class HeroRepository(
+    private val heroDao: HeroDao,
+    private val heroService: HeroService = ApiClient.getHeroService()
+) {
 
     fun searchByName(name: String, callback: (Result<List<Hero>>) -> Unit) {
         val searchByName = heroService.searchByName(textQuery = name)
@@ -17,6 +22,10 @@ class HeroRepository(private val heroService: HeroService = ApiClient.getHeroSer
             override fun onResponse(call: Call<HeroResponse>, response: Response<HeroResponse>) {
                 if (response.isSuccessful) {
                     try {
+                        val heroes = response.body()!!.heroes
+                        heroes.forEach { hero ->
+                            hero.isFavorite = heroDao.getById(hero.id) != null
+                        }
                         callback(Result.Success(response.body()!!.heroes))
                     } catch (e: Exception) {
                         callback(Result.Success(listOf<Hero>()))
@@ -44,5 +53,15 @@ class HeroRepository(private val heroService: HeroService = ApiClient.getHeroSer
                 callback(Result.Error(t.localizedMessage as String))
             }
         })
+    }
+
+    fun save(hero: Hero) {
+        heroDao.save(HeroEntity(hero.id))
+        hero.isFavorite = true
+    }
+
+    fun delete(hero: Hero) {
+        heroDao.delete(HeroEntity(hero.id))
+        hero.isFavorite = false
     }
 }

@@ -21,13 +21,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import pe.edu.superherocompose.data.local.AppDatabase
 import pe.edu.superherocompose.data.model.Hero
 import pe.edu.superherocompose.repository.HeroRepository
 import pe.edu.superherocompose.utils.Result
 
 @Composable
 fun Search(
-    selectHero: (String) -> Unit
+    selectHero: (String) -> Unit,
 ) {
 
     val textQuery = remember {
@@ -37,6 +38,7 @@ fun Search(
     val heroes = remember {
         mutableStateOf(listOf<Hero>())
     }
+    val context = LocalContext.current
 
     Column {
         HeroSearch(textQuery, heroes)
@@ -50,8 +52,10 @@ fun HeroSearch(
     textQuery: MutableState<String>,
     heroes: MutableState<List<Hero>>
 ) {
-    val repository = HeroRepository()
     val context = LocalContext.current
+    val heroDao = AppDatabase.getInstance(context).heroDao()
+
+    val repository = HeroRepository(heroDao)
 
     OutlinedTextField(
         modifier = Modifier

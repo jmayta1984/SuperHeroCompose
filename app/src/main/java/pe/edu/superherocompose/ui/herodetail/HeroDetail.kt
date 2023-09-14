@@ -20,10 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
+import pe.edu.superherocompose.data.local.AppDatabase
 import pe.edu.superherocompose.data.model.Biography
 import pe.edu.superherocompose.data.model.Hero
 import pe.edu.superherocompose.repository.HeroRepository
@@ -31,9 +33,10 @@ import pe.edu.superherocompose.utils.Result
 
 
 @Composable
-fun HeroDetail(id: String = "69") {
-
-    val repository = HeroRepository()
+fun HeroDetail(id: String) {
+    val context = LocalContext.current
+    val heroDao = AppDatabase.getInstance(context).heroDao()
+    val repository = HeroRepository(heroDao)
     val hero = remember {
         mutableStateOf<Hero?>(null)
     }
